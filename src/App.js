@@ -1,24 +1,33 @@
-import logo from './logo.svg';
+import { useEffect } from 'react';
 import './App.css';
+import api from './api/api';
+import { login } from "./utils/authSlice";
+import Header from './components/Header';
+import Todos from './components/Todos';
+import { useDispatch, useSelector } from 'react-redux';
+
 
 function App() {
+  const dispatch = useDispatch();
+  const { userId } = useSelector((state) => state.auth)
+  console.log("userId=" + userId);
+
+  useEffect(() => {
+    createAnnoUser()
+  }, [])
+
+  const createAnnoUser = async () => {
+    await api.createSession();
+    const data = await api.getAccount();
+    console.log("data");
+    dispatch(login(data));
+  }
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header />
+      <Todos />
+    </>
   );
 }
 
